@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import re
 
 def insertData():
     with open("The_Count_of_Monte_Cristo_Chapter_1.txt", "r") as f:
@@ -31,13 +32,15 @@ def generateSentences(edge_matrix, read_data_list, list_of_words):
     current_word = ""
     next_word = ""
     sentence = ""
-    sentence += starting_word + ""
+    sentence += starting_word + " "
     current_word = starting_word
     for i in range(100):
         weights = edge_matrix[list_of_words.index(current_word), : ]
         next_word = random.choices(list_of_words, weights, k=1)
         next_word = ''.join(next_word)
         sentence += (next_word + " ")
+        if re.match(r"[^\w,;\"'&”“]", sentence[-2]):
+            break
         current_word = next_word
     print(sentence)
 
