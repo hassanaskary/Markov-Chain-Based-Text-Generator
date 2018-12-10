@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 def insertData():
     with open("The_Count_of_Monte_Cristo_Chapter_1.txt", "r") as f:
@@ -23,10 +24,22 @@ def makeEdgeMatrix(read_data):
         for k in list_of_adjacent_words: # now to put values in edge matrix.
             edge_matrix[list_of_words.index(i),list_of_words.index(k)] = list_of_adjacent_words.count(k)/len(list_of_adjacent_words) # we're keeping track of location of words by their index. And the edge matrix contains probabilities.
         list_of_adjacent_words.clear() # clearing list so that it can store immediate right words of the next word.
-    generateSentences(edge_matrix)
+    generateSentences(edge_matrix, read_data_list, list_of_words)
 
-def generateSentences(edge_matrix):
-    print()
+def generateSentences(edge_matrix, read_data_list, list_of_words):
+    starting_word = random.choice(read_data_list)
+    current_word = ""
+    next_word = ""
+    sentence = ""
+    sentence += starting_word + ""
+    current_word = starting_word
+    for i in range(100):
+        weights = edge_matrix[list_of_words.index(current_word), : ]
+        next_word = random.choices(list_of_words, weights, k=1)
+        next_word = ''.join(next_word)
+        sentence += (next_word + " ")
+        current_word = next_word
+    print(sentence)
 
 def main():
     insertData()
