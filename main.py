@@ -13,8 +13,20 @@ def makeEdgeMatrix(read_data):
             list_of_words.append(w)
     number_of_words = len(list_of_words)
     edge_matrix = np.zeros((number_of_words, number_of_words))
-    
-    print(edge_matrix)
+    list_of_adjacent_words = [] # temporary list that contains the immediate right words of current word being considered.
+    for i in list_of_words: # current word being considered.
+        for j in range(len(read_data_list)):
+            if read_data_list[j] == i: # if considered word if found.
+                if j+1 >= len(read_data_list): # and the next index is not out of bounds.
+                    break # if it is then break
+                list_of_adjacent_words.append(read_data_list[j+1]) # then put immediate right word into list_of_adjacent_words.
+        for k in list_of_adjacent_words: # now to put values in edge matrix.
+            edge_matrix[list_of_words.index(i),list_of_words.index(k)] = list_of_adjacent_words.count(k)/len(list_of_adjacent_words) # we're keeping track of location of words by their index. And the edge matrix contains probabilities.
+        list_of_adjacent_words.clear() # clearing list so that it can store immediate right words of the next word.
+    generateSentences(edge_matrix)
+
+def generateSentences(edge_matrix):
+    print()
 
 def main():
     insertData()
