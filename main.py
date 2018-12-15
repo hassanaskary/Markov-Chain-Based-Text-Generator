@@ -3,7 +3,7 @@ import random
 import re
 
 def insertData():
-    with open("The_Count_of_Monte_Cristo_Chapter_1.txt", "r") as f:
+    with open("Abraham_Lincoln_March_4_1865.txt", "r") as f:
         read_data = f.read()
     makeEdgeMatrix(read_data)
 
