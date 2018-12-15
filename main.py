@@ -81,14 +81,15 @@ def generateText(edge_matrix, list_of_words, initial_words):
 
 
 def main():
-    file_name = "text/The_Count_of_Monte_Cristo_Chapter_1.txt"
-    read_data = insertData(file_name)
-    edge_matrix, list_of_words, initial_words = makeEdgeMatrix(read_data)
+    file_name = input("Enter name of txt file ('example.txt'): ") # ask for filename
+    file_name = "text/" + file_name # adding text/ at start so that file is searched in text/ folder
+    read_data = insertData(file_name) # parsing file
+    edge_matrix, list_of_words, initial_words = makeEdgeMatrix(read_data) # making edge_matrix from read_data
 
-    choice = "y"
-    while(choice == "y"):
-        generateText(edge_matrix, list_of_words, initial_words)
-        choice = input("Generate text? (y/n) ")
+    choice = "y" # user choice
+    while(choice == "y"): # checking choice if 'y' then generate text if 'n' then terminate
+        generateText(edge_matrix, list_of_words, initial_words) # generating text
+        choice = input("Generate text? (y/n) ") # getting user choice
 
 
 if __name__ == "__main__":
