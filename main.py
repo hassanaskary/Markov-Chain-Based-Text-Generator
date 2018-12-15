@@ -81,12 +81,11 @@ def generateText(edge_matrix, list_of_words, initial_words):
 
 
 def main():
-    file_name = "The_Count_of_Monte_Cristo_Chapter_1.txt"
+    file_name = "text/The_Count_of_Monte_Cristo_Chapter_1.txt"
     read_data = insertData(file_name)
     edge_matrix, list_of_words, initial_words = makeEdgeMatrix(read_data)
 
-    choice = "n"
-    choice = input("Generate text? (y/n) ")
+    choice = "y"
     while(choice == "y"):
         generateText(edge_matrix, list_of_words, initial_words)
         choice = input("Generate text? (y/n) ")
