@@ -12,7 +12,8 @@ def insertData(file_name):
 def makeEdgeMatrix(read_data):
     # read_data but put into a list seperated by spaces.
     read_data_list = read_data.split()
-    list_of_words = []  # This list contains all the words, once.
+    list_of_words = []  # this list contains all the words, once.
+    initial_words = []  # list of words that come at the start of a sentence.
 
     for w in read_data_list:
         # populating list_of_words
@@ -20,6 +21,15 @@ def makeEdgeMatrix(read_data):
             list_of_words.append(w)
 
     number_of_words = len(list_of_words)
+
+    # (len(read_data_list)-1) is so that loop stops at n-2 if n is the size of read_data_list. This so that initial_words.append doesn't throw index out of bounds errors
+    for c in range(len(read_data_list)-1):
+        # populating initial_words
+        search_string = read_data_list[c]  # stores current word in a variable
+        # check if search_string is an ending word which containes '.','!', or '?' at the end of it
+        if re.search(r"[.?!]", search_string):
+            # if it is then append the next word to initial_words
+            initial_words.append(read_data_list[c+1])
 
     edge_matrix = np.zeros((number_of_words, number_of_words))
 
@@ -47,32 +57,34 @@ def makeEdgeMatrix(read_data):
 
         list_of_adjacent_words.clear()
 
-    return edge_matrix, list_of_words
+    return edge_matrix, list_of_words, initial_words
 
 
-def generateText(edge_matrix, list_of_words):
-    starting_word = random.choice(list_of_words)
+def generateText(edge_matrix, list_of_words, initial_words):
+    starting_word = random.choice(initial_words)
     current_word = ""
     next_word = ""
     text = ""
     text += starting_word + " "
     current_word = starting_word
+
     for _ in range(100):
         weights = edge_matrix[list_of_words.index(current_word), :]
         next_word = random.choices(list_of_words, weights, k=1)
         next_word = ''.join(next_word)
         text += (next_word + " ")
-        if re.match(r"[^\w,;\"'&”“]", text[-2]):
-            break
+#        if re.search(r"[.?!]", text):
+#            break
         current_word = next_word
+
     print(text)
 
 
 def main():
     file_name = "Abraham_Lincoln_March_4_1865.txt"
     read_data = insertData(file_name)
-    edge_matrix, list_of_words = makeEdgeMatrix(read_data)
-    generateText(edge_matrix, list_of_words)
+    edge_matrix, list_of_words, initial_words = makeEdgeMatrix(read_data)
+    generateText(edge_matrix, list_of_words, initial_words)
 
 
 if __name__ == "__main__":
