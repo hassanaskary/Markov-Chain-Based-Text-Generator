@@ -2,50 +2,78 @@ import numpy as np
 import random
 import re
 
-def insertData():
-    with open("Abraham_Lincoln_March_4_1865.txt", "r") as f:
+
+def insertData(file_name):
+    with open(file_name, "r") as f:
         read_data = f.read()
-    makeEdgeMatrix(read_data)
+    return read_data
+
 
 def makeEdgeMatrix(read_data):
-    read_data_list = read_data.split() # read_data but put into a list seperated by spaces.
-    list_of_words = [] # This list contains all the words, once.
+    # read_data but put into a list seperated by spaces.
+    read_data_list = read_data.split()
+    list_of_words = []  # This list contains all the words, once.
+
     for w in read_data_list:
+        # populating list_of_words
         if w not in list_of_words:
             list_of_words.append(w)
-    number_of_words = len(list_of_words)
-    edge_matrix = np.zeros((number_of_words, number_of_words))
-    list_of_adjacent_words = [] # temporary list that contains the immediate right words of current word being considered.
-    for i in list_of_words: # current word being considered.
-        for j in range(len(read_data_list)):
-            if read_data_list[j] == i: # if considered word if found.
-                if j+1 >= len(read_data_list): # and the next index is not out of bounds.
-                    break # if it is then break
-                list_of_adjacent_words.append(read_data_list[j+1]) # then put immediate right word into list_of_adjacent_words.
-        for k in list_of_adjacent_words: # now to put values in edge matrix.
-            edge_matrix[list_of_words.index(i),list_of_words.index(k)] = list_of_adjacent_words.count(k)/len(list_of_adjacent_words) # we're keeping track of location of words by their index. And the edge matrix contains probabilities.
-        list_of_adjacent_words.clear() # clearing list so that it can store immediate right words of the next word.
-    generateSentences(edge_matrix, read_data_list, list_of_words)
 
-def generateSentences(edge_matrix, read_data_list, list_of_words):
-    starting_word = random.choice(read_data_list)
+    number_of_words = len(list_of_words)
+
+    edge_matrix = np.zeros((number_of_words, number_of_words))
+
+    # temporary list that contains the immediate right words of current word being considered.
+    list_of_adjacent_words = []
+
+    # TODO should be able to iterate through the list once.
+    # when ever a word is found add the immediate right word to matrix
+    # and also update probabilities for that word
+    for i in list_of_words:  # current word being considered.
+        # iterating over read_data_list to find matches
+        for j in range(len(read_data_list)):
+            if read_data_list[j] == i:  # if considered word if found.
+                # and the next index is not out of bounds.
+                if j+1 >= len(read_data_list):
+                    break  # if it is then break
+                # then put immediate right word into list_of_adjacent_words.
+                list_of_adjacent_words.append(read_data_list[j+1])
+
+        for k in list_of_adjacent_words:  # now to put values in edge matrix.
+            # we're keeping track of location of words by their index. And the edge matrix contains probabilities.
+            edge_matrix[list_of_words.index(i), list_of_words.index(
+                k)] = list_of_adjacent_words.count(k)/len(list_of_adjacent_words)
+        # clearing list so that it can store immediate right words of the next word.
+
+        list_of_adjacent_words.clear()
+
+    return edge_matrix, list_of_words
+
+
+def generateText(edge_matrix, list_of_words):
+    starting_word = random.choice(list_of_words)
     current_word = ""
     next_word = ""
-    sentence = ""
-    sentence += starting_word + " "
+    text = ""
+    text += starting_word + " "
     current_word = starting_word
-    for i in range(100):
-        weights = edge_matrix[list_of_words.index(current_word), : ]
+    for _ in range(100):
+        weights = edge_matrix[list_of_words.index(current_word), :]
         next_word = random.choices(list_of_words, weights, k=1)
         next_word = ''.join(next_word)
-        sentence += (next_word + " ")
-        if re.match(r"[^\w,;\"'&”“]", sentence[-2]):
+        text += (next_word + " ")
+        if re.match(r"[^\w,;\"'&”“]", text[-2]):
             break
         current_word = next_word
-    print(sentence)
+    print(text)
+
 
 def main():
-    insertData()
+    file_name = "Abraham_Lincoln_March_4_1865.txt"
+    read_data = insertData(file_name)
+    edge_matrix, list_of_words = makeEdgeMatrix(read_data)
+    generateText(edge_matrix, list_of_words)
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     main()
